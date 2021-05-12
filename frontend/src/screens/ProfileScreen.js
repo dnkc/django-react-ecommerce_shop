@@ -34,9 +34,6 @@ const ProfileScreen = ({ history, location }) => {
     if (!userInfo) {
       history.push("/login");
     } else {
-      console.log("userInfo", userInfo);
-      console.log("user", user);
-
       if (!user || !user.name || success) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
