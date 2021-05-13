@@ -5,10 +5,11 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
-from base.serializer import ProductSerializer, OrderSerializer
+from base.serializer import OrderSerializer
 
 from base.models import Product, Order, OrderItem, ShippingAddress
 
+from datetime import datetime
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -60,3 +61,29 @@ def addOrderItems(request):
 
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    user=request.user
+    order=Order.objects.get(_id=pk)
+    try:
+        if user.is_staff or order.user == user:
+            serializer=OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            return Response({'detail':'Not authorized'}, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail':'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToPaid(request, pk):
+    order = Order.objects.get(_id=pk)
+
+    order.isPaid = True
+    order.paidAt = datetime.now()
+
+    order.save()
+
+    return Response('Order was paid')
