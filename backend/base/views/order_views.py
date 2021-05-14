@@ -87,3 +87,21 @@ def updateOrderToPaid(request, pk):
     order.save()
 
     return Response('Order was paid')
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    # many or single object to serialize required
+    # serializer required for every model we want to return
+    return Response(serializer.data)

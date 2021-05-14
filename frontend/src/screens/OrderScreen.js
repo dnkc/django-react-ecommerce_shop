@@ -19,6 +19,7 @@ import axios from "axios";
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
+
   const dispatch = useDispatch();
   const [sdkReady, setSdkReady] = useState(false);
 
@@ -48,7 +49,7 @@ const OrderScreen = ({ match, history }) => {
       history.push("/login");
     }
     const addPayPalScript = async () => {
-      const { data: clientId } = await axios.get("/api/config/paypal");
+      // const { data: clientId } = await axios.get("/api/config/paypal");
       const script = document.createElement("script");
       script.type = "text/javascript";
       script.src =
@@ -62,7 +63,7 @@ const OrderScreen = ({ match, history }) => {
     //|| successPay || successDeliver
     if (!order || order._id !== Number(orderId) || successPay) {
       dispatch({ type: ORDER_PAY_RESET });
-      //   dispatch({ type: ORDER_DELIVER_RESET });
+      // dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
       dispatch({ type: CART_RESET });
     } else if (!order.isPaid) {

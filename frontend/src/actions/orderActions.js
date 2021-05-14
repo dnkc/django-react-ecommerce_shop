@@ -98,7 +98,7 @@ export const listMyOrders = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(`/api/orders/myorders`, config);
+    const { data } = await axios.get(`/api/orders/myorders/`, config);
     dispatch({
       type: ORDER_LIST_MY_SUCCESS,
       payload: data,
@@ -132,7 +132,7 @@ export const payOrder =
         },
       };
       const { data } = await axios.put(
-        `/api/orders/${orderId}/pay`,
+        `/api/orders/${orderId}/pay/`,
         paymentResult,
         config
       );
@@ -140,13 +140,14 @@ export const payOrder =
         type: ORDER_PAY_SUCCESS,
         payload: data,
       });
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       dispatch({
         type: ORDER_PAY_FAIL,
         payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+          err.response && err.response.data.detail
+            ? err.response.data.detail
+            : err.message,
       });
     }
   };

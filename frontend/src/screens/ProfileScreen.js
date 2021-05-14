@@ -6,7 +6,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { getUserDetails, updateUserProfile } from "../actions/userActions";
 import { USER_UPDATE_PROFILE_RESET } from "../constants/userConstants";
-// import { listMyOrders } from "../actions/orderActions";
+import { listMyOrders } from "../actions/orderActions";
 // import Meta from "../components/Meta";
 
 const ProfileScreen = ({ history, location }) => {
@@ -27,8 +27,8 @@ const ProfileScreen = ({ history, location }) => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
 
-  //   const orderListMy = useSelector((state) => state.orderListMy);
-  //   const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
+  const orderListMy = useSelector((state) => state.orderListMy);
+  const { loading: loadingOrders, error: errorOrders, orders } = orderListMy;
 
   useEffect(() => {
     if (!userInfo) {
@@ -37,7 +37,7 @@ const ProfileScreen = ({ history, location }) => {
       if (!user || !user.name || success) {
         dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails("profile"));
-        // dispatch(listMyOrders());
+        dispatch(listMyOrders());
       } else {
         setName(user.name);
         setEmail(user.email);
@@ -109,7 +109,7 @@ const ProfileScreen = ({ history, location }) => {
             </Button>
           </Form>
         </Col>
-        {/* <Col md={9}>
+        <Col md={9}>
           <h2>My Orders</h2>
           {loadingOrders ? (
             <Loader />
@@ -155,7 +155,7 @@ const ProfileScreen = ({ history, location }) => {
                     </td>
                     <td>
                       <LinkContainer to={`/order/${order._id}`}>
-                        <Button className="btn-sm" variant="light">
+                        <Button className="btn-sm" variant="dark">
                           Details
                         </Button>
                       </LinkContainer>
@@ -165,7 +165,7 @@ const ProfileScreen = ({ history, location }) => {
               </tbody>
             </Table>
           )}
-        </Col> */}
+        </Col>
       </Row>
     </>
   );
