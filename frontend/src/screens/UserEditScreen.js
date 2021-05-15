@@ -27,17 +27,13 @@ const UserEditScreen = ({ history, match }) => {
   } = userUpdate;
 
   useEffect(() => {
-    if (successUpdate) {
-      dispatch({ type: USER_UPDATE_RESET });
-      history.push("/admin/userlist");
+    if (!user.name || user._id !== Number(userId)) {
+      console.log("dispatching getuserdetails here");
+      dispatch(getUserDetails(userId));
     } else {
-      if (!user.name || user._id !== userId) {
-        dispatch(getUserDetails(userId));
-      } else {
-        setName(user.name);
-        setEmail(user.email);
-        setisAdmin(user.isAdmin);
-      }
+      setName(user.name);
+      setEmail(user.email);
+      setisAdmin(user.isAdmin);
     }
   }, [history, user, dispatch, userId, successUpdate]);
 
