@@ -12,7 +12,7 @@ function Header({ history }) {
   const { userInfo } = userLogin;
 
   const logoutHandler = () => {
-    // history.push("/");
+    history.push("/");
     dispatch(logout());
   };
 
@@ -68,4 +68,4 @@ function Header({ history }) {
   );
 }
 
-export default Header;
+export default withRouter(Header);

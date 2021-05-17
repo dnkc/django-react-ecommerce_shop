@@ -28,7 +28,6 @@ const UserEditScreen = ({ history, match }) => {
 
   useEffect(() => {
     if (!user.name || user._id !== Number(userId)) {
-      console.log("dispatching getuserdetails here");
       dispatch(getUserDetails(userId));
     } else {
       setName(user.name);
