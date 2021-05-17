@@ -8,17 +8,32 @@ import { listProducts } from "../actions/productActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 
-const HomeScreen = () => {
+import ProductCarousel from "../components/ProductCarousel";
+
+import { Link } from "react-router-dom";
+
+const HomeScreen = ({ match }) => {
+  const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
+
   const dispatch = useDispatch();
+
   const productList = useSelector((state) => state.productList);
-  const { loading, error, products } = productList;
+  const { loading, error, products, page, pages } = productList;
 
   useEffect(() => {
-    dispatch(listProducts());
-  }, [dispatch]);
+    dispatch(listProducts(keyword, pageNumber));
+  }, [dispatch, keyword, pageNumber]);
 
   return (
     <div>
+      {!keyword ? (
+        <ProductCarousel />
+      ) : (
+        <Link to="/" className="btn btn-light">
+          Go Back
+        </Link>
+      )}
       <h1>Latest Products</h1>
       {loading ? (
         <Loader />

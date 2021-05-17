@@ -105,3 +105,15 @@ def getOrders(request):
     # many or single object to serialize required
     # serializer required for every model we want to return
     return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToDelivered(request, pk):
+    order = Order.objects.get(_id=pk)
+
+    order.isDelivered = True
+    order.deliveredAt = datetime.now()
+
+    order.save()
+
+    return Response('Order was delivered')
