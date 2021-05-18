@@ -13,7 +13,6 @@ from base.models import Product, Review
 
 @api_view(['GET'])
 def getProducts(request):
-    print(request.query_params)
     query = request.query_params.get('keyword')
     if query == None:
         query = ''
@@ -22,7 +21,7 @@ def getProducts(request):
         name__icontains=query).order_by('-createdAt')
 
     page = request.query_params.get('page')
-    paginator = Paginator(products, 3)
+    paginator = Paginator(products, 5)
 
     try:
         products = paginator.page(page)
