@@ -17,3 +17,5 @@ urlpatterns = [
     path('edit/<str:pk>/', views.updateProduct, name='product-edit')
 
 ]
+
+

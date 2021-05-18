@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from base.serializer import ProductSerializer
@@ -13,11 +13,32 @@ from base.models import Product, Review
 
 @api_view(['GET'])
 def getProducts(request):
-    products = Product.objects.all()
+    print(request.query_params)
+    query = request.query_params.get('keyword')
+    if query == None:
+        query = ''
+
+    products = Product.objects.filter(
+        name__icontains=query).order_by('-createdAt')
+
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 3)
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+
+    if page == None:
+        page = 1
+
+    page = int(page)
+    print('Page:', page)
+    print('Keyword: ', query)
     serializer = ProductSerializer(products, many=True)
-    # many or single object to serialize required
-    # serializer required for every model we want to return
-    return Response(serializer.data)
+    return Response({'products': serializer.data, 'page': page, 'pages': paginator.num_pages})
 
 @api_view(['GET'])
 def getProduct(request, pk):
@@ -92,16 +113,16 @@ def createProductReview(request, pk):
     user = request.user
     data = request.data
     product = Product.objects.get(_id=pk)
-
+    print(request.data)
     #1 - review already exists (do not allow multiple reviews by same user)
     alreadyExists = product.review_set.filter(user=user).exists()
     if alreadyExists:
-        content = {'details': 'Product already reviewed'}
+        content = {'detail': 'Product already reviewed'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
     #2 - customer submits a review with no rating or zero
-    elif data['rating'] == 0:
-        content = {'details': 'Please select a rating'}
-        return Response(content, status=status.HTTP_400_BAD_REQUEST)
+    elif data and data['rating'] == 0:
+        return Response({'detail': 'Please select a rating'}, status=status.HTTP_400_BAD_REQUEST)
+               # return Response({'detail':'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST) 
     #3 - create review 
     else:
         review = Review.objects.create(

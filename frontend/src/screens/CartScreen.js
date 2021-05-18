@@ -11,7 +11,6 @@ import {
   Card,
 } from "react-bootstrap";
 
-import Loader from "../components/Loader";
 import Message from "../components/Message";
 
 import { addToCart, removeFromCart } from "../actions/cartActions";

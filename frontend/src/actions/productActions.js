@@ -26,28 +26,28 @@ import {
 
 import axios from "axios";
 
-export const listProducts = () => async (dispatch) => {
-  try {
-    dispatch({
-      type: PRODUCT_LIST_REQUEST,
-    });
+export const listProducts =
+  (keyword = "") =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: PRODUCT_LIST_REQUEST });
 
-    const { data } = await axios.get("/api/products/");
+      const { data } = await axios.get(`/api/products${keyword}`);
 
-    dispatch({
-      type: PRODUCT_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (err) {
-    dispatch({
-      type: PRODUCT_LIST_FAIL,
-      payload:
-        err.response && err.response.data.detail
-          ? err.response.data.detail
-          : err.message,
-    });
-  }
-};
+      dispatch({
+        type: PRODUCT_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_LIST_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };
 
 export const listProductDetails = (id) => async (dispatch) => {
   try {
@@ -173,13 +173,13 @@ export const listTopProducts = () => async (dispatch) => {
       type: PRODUCT_TOP_SUCCESS,
       payload: data,
     });
-  } catch (error) {
+  } catch (err) {
     dispatch({
       type: PRODUCT_TOP_FAIL,
       payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
+        err.response && err.response.data.detail
+          ? err.response.data.detail
+          : err.message,
     });
   }
 };
@@ -201,38 +201,22 @@ export const createProductReview =
           Authorization: `Bearer ${userInfo.token}`,
         },
       };
-      await axios.post(`/api/products/${productId}/reviews/`, review, config);
+      const { data } = await axios.post(
+        `/api/products/${productId}/reviews/`,
+        review,
+        config
+      );
       dispatch({
         type: PRODUCT_CREATE_REVIEW_SUCCESS,
+        payload: data,
       });
-    } catch (error) {
+    } catch (err) {
       dispatch({
         type: PRODUCT_CREATE_REVIEW_FAIL,
         payload:
-          error.response && error.response.data.message
-            ? error.response.data.message
-            : error.message,
+          err.response && err.response.data.detail
+            ? err.response.data.detail
+            : err.message,
       });
     }
   };
-
-export const productReviewCreateReducer = (state = {}, action) => {
-  switch (action.type) {
-    case PRODUCT_CREATE_REVIEW_REQUEST:
-      return { loading: true };
-    case PRODUCT_CREATE_REVIEW_SUCCESS:
-      return {
-        loading: false,
-        success: true,
-      };
-    case PRODUCT_CREATE_REVIEW_FAIL:
-      return {
-        loading: false,
-        error: action.payload,
-      };
-    case PRODUCT_CREATE_REVIEW_RESET:
-      return {};
-    default:
-      return state;
-  }
-};

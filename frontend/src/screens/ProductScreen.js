@@ -175,7 +175,7 @@ const ProductScreen = ({ history, match }) => {
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
                           as="select"
-                          value="rating"
+                          value={rating}
                           onChange={(e) => setRating(e.target.value)}
                         >
                           <option value="">Select...</option>
@@ -186,14 +186,17 @@ const ProductScreen = ({ history, match }) => {
                           <option value="5">5 - Excellent</option>
                         </Form.Control>
                       </Form.Group>
-                      <Form.Group controlid="comment">
-                        <Form.Label>Comment</Form.Label>
+
+                      <Form.Group controlId="comment">
+                        <Form.Label>Review</Form.Label>
                         <Form.Control
                           as="textarea"
-                          row="3"
+                          row="5"
+                          value={comment}
                           onChange={(e) => setComment(e.target.value)}
                         ></Form.Control>
                       </Form.Group>
+
                       <Button type="submit" variant="primary">
                         Submit
                       </Button>

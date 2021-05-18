@@ -1,8 +1,13 @@
 import React from "react";
 import { Pagination } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import { withRouter } from "react-router-dom";
 
-const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
+function Paginate({ pages, page, keyword = "", isAdmin = false }) {
+  if (keyword) {
+    keyword = keyword.split("?keyword=")[1].split("&")[0];
+  }
+
   return (
     pages > 1 && (
       <Pagination>
@@ -11,10 +16,8 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
             key={x + 1}
             to={
               !isAdmin
-                ? keyword
-                  ? `/search/${keyword}/page${x + 1}`
-                  : `/page/${x + 1}`
-                : `/admin/productlist/${x + 1}`
+                ? `/?keyword=${keyword}&page=${x + 1}`
+                : `/admin/productlist/?keyword=${keyword}&page=${x + 1}`
             }
           >
             <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>
@@ -23,6 +26,6 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
       </Pagination>
     )
   );
-};
+}
 
-export default Paginate;
+export default withRouter(Paginate);

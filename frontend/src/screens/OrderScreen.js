@@ -15,7 +15,6 @@ import {
   ORDER_DELIVER_RESET,
 } from "../constants/orderConstants";
 import { CART_RESET } from "../constants/cartConstants";
-import axios from "axios";
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
